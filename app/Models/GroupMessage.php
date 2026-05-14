@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Message extends Model
+class GroupMessage extends Model
 {
     protected $fillable = [
+        'group_id',
         'sender_id',
-        'receiver_id',
         'message'
     ];
 
@@ -17,8 +17,8 @@ class Message extends Model
         return $this->belongsTo(User::class, 'sender_id');
     }
 
-    public function receiver()
+    public function group()
     {
-        return $this->belongsTo(User::class, 'receiver_id');
+        return $this->belongsTo(Group::class);
     }
 }
