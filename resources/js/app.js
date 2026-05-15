@@ -6,6 +6,12 @@ window.Alpine = Alpine;
 
 Alpine.start();
 
+/*
+|--------------------------------------------------------------------------
+| ONLINE / OFFLINE PRESENCE
+|--------------------------------------------------------------------------
+*/
+
 window.Echo.join('chat')
 
     .here((users) => {
@@ -40,6 +46,12 @@ window.Echo.join('chat')
 
     })
 
+    /*
+    |--------------------------------------------------------------------------
+    | PRIVATE CHAT REALTIME
+    |--------------------------------------------------------------------------
+    */
+
     .listen('.message.sent', (e) => {
 
         console.log('Realtime Message:', e);
@@ -47,6 +59,82 @@ window.Echo.join('chat')
         location.reload();
 
     });
+
+/*
+|--------------------------------------------------------------------------
+| GROUP CHAT REALTIME
+|--------------------------------------------------------------------------
+*/
+
+window.Echo.channel('group-chat')
+
+    .listen('.group.message.sent', (e) => {
+
+        console.log('Realtime Group Message:', e);
+
+        location.reload();
+
+    });
+
+/*
+|--------------------------------------------------------------------------
+| TYPING INDICATOR
+|--------------------------------------------------------------------------
+*/
+
+window.Echo.private('chat')
+
+    .listenForWhisper('typing', (e) => {
+
+        const typingBox = document.getElementById('typing-indicator');
+
+        if (typingBox) {
+
+            typingBox.innerHTML = `
+                <span class="text-sm text-gray-500 italic">
+                    ${e.name} sedang mengetik...
+                </span>
+            `;
+
+            setTimeout(() => {
+
+                typingBox.innerHTML = '';
+
+            }, 2000);
+
+        }
+
+    });
+
+/*
+|--------------------------------------------------------------------------
+| SEND TYPING EVENT
+|--------------------------------------------------------------------------
+*/
+
+const messageInput = document.getElementById('message-input');
+
+if (messageInput) {
+
+    messageInput.addEventListener('keydown', () => {
+
+        window.Echo.private('chat')
+
+            .whisper('typing', {
+
+                name: window.currentUserName
+
+            });
+
+    });
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| UPDATE ONLINE STATUS UI
+|--------------------------------------------------------------------------
+*/
 
 function updateOnlineStatus()
 {
@@ -58,7 +146,7 @@ function updateOnlineStatus()
             user => user.id === userId
         );
 
-        if(isOnline){
+        if (isOnline) {
 
             element.innerHTML = `
                 <span class="text-green-500 font-semibold">
@@ -78,10 +166,3 @@ function updateOnlineStatus()
 
     });
 }
-    .listen('.message.sent', (e) => {
-
-        console.log('Realtime Message:', e);
-
-        location.reload();
-
-    });

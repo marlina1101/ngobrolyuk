@@ -41,6 +41,28 @@
                     </a>
                 </div>
 
+                <!-- GROUP CHAT -->
+<a href="{{ route('groups.index') }}">
+
+    <div class="bg-green-600 text-white rounded-3xl p-8 shadow-xl hover:scale-105 transition">
+
+        <div class="text-5xl mb-4">
+            👥
+        </div>
+
+        <h2 class="text-2xl font-bold mb-2">
+            Group Chat
+        </h2>
+
+        <p class="opacity-80">
+            Buat dan gabung ke group chat realtime.
+        </p>
+
+    </div>
+
+</a>
+</div>
+
                 <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition">
                     <div class="text-5xl mb-4">🚪</div>
                     <h2 class="text-2xl font-bold mb-2">Logout</h2>

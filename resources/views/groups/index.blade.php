@@ -53,7 +53,7 @@
 
                         </div>
 
-                        <a href="#"
+                        <a href="{{ route('groups.show', $group->id) }}"
                            class="bg-blue-600 text-white px-5 py-2 rounded-xl">
 
                             Masuk

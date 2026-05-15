@@ -5,6 +5,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\GroupController;
+use Illuminate\Support\Facades\Broadcast;
+
+Route::post('/groups/{id}/message', [GroupController::class, 'sendMessage'])
+    ->name('groups.message');
+
+Route::get('/groups/{id}', [GroupController::class, 'show'])
+    ->name('groups.show');
 
 Route::get('/', function () {
     return redirect('/login');
@@ -35,5 +42,7 @@ Route::post('/message', [MessageController::class, 'store'])
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 });
+
+Broadcast::routes(['middleware' => ['auth']]);
 
 require __DIR__.'/auth.php';
