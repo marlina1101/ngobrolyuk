@@ -1,66 +1,357 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 💬 NgobrolYuk
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi chat realtime berbasis web yang dibangun dengan **Laravel 12**, **Laravel Reverb** (WebSocket), dan **Alpine.js**. Mendukung chat private antar pengguna, chat grup, kirim file, indikator mengetik, serta tracking status **Online / Offline** secara realtime.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Fitur
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- 🔐 Autentikasi (Register, Login, Logout) via Laravel Breeze
+- 💬 Chat private antar pengguna
+- 👥 Chat grup (buat grup, kirim pesan ke grup)
+- 📎 Kirim file / lampiran pada pesan
+- 🟢 Tracking status **Online / Offline** realtime
+- ⌨️ Indikator **sedang mengetik...**
+- ⚡ Pesan masuk **langsung muncul** tanpa reload halaman (WebSocket via Laravel Reverb)
+- 📋 Preview pesan terakhir di sidebar
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🛠️ Teknologi yang Digunakan
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+| Teknologi | Versi | Fungsi |
+|---|---|---|
+| PHP | ^8.2 | Backend |
+| Laravel | ^12.0 | Framework utama |
+| Laravel Reverb | ^1.10 | WebSocket server |
+| Laravel Breeze | ^2.4 | Autentikasi |
+| MySQL | - | Database |
+| Alpine.js | ^3.4 | Reaktivitas UI ringan |
+| Tailwind CSS | ^3.1 | Styling |
+| Vite | ^6.0 | Bundler aset |
+| Laravel Echo | ^2.3 | Client WebSocket |
+| Pusher JS | ^8.5 | Driver WebSocket client |
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 📁 Struktur Folder Penting
 
-## Laravel Sponsors
+```
+ngobrolyuk/
+├── app/
+│   ├── Events/
+│   │   ├── MessageSent.php          # Event broadcast pesan private
+│   │   └── GroupMessageSent.php     # Event broadcast pesan grup
+│   ├── Http/Controllers/
+│   │   ├── ChatController.php       # Halaman & logika chat private
+│   │   ├── MessageController.php    # Kirim pesan (return JSON untuk AJAX)
+│   │   └── GroupController.php      # Buat grup, kirim pesan grup
+│   └── Models/
+│       ├── User.php
+│       ├── Message.php              # Pesan private (sender, receiver, file)
+│       ├── Group.php                # Grup chat
+│       └── GroupMessage.php         # Pesan dalam grup
+├── database/migrations/
+│   ├── create_messages_table.php    # sender_id, receiver_id, message, file
+│   ├── create_groups_table.php      # name
+│   ├── create_group_user_table.php  # pivot group <-> user
+│   └── create_group_messages_table.php
+├── resources/
+│   ├── js/
+│   │   ├── app.js                   # Logic WebSocket, online tracking, AJAX
+│   │   └── bootstrap.js             # Konfigurasi Echo + Axios
+│   └── views/
+│       ├── chat/index.blade.php     # Halaman chat utama
+│       ├── groups/
+│       │   ├── index.blade.php      # Daftar grup
+│       │   └── show.blade.php       # Halaman chat grup
+│       └── layouts/app.blade.php    # Layout utama
+├── routes/
+│   ├── web.php                      # Semua route aplikasi
+│   └── channels.php                 # Presence channel & private channel
+└── .env                             # Konfigurasi environment
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## ⚙️ Skema Database
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Tabel `users`
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| id | bigint | Primary key |
+| name | varchar | Nama pengguna |
+| email | varchar | Email unik |
+| password | varchar | Password ter-hash |
 
-## Contributing
+### Tabel `messages`
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| id | bigint | Primary key |
+| sender_id | bigint FK | Pengirim (users.id) |
+| receiver_id | bigint FK | Penerima (users.id) |
+| message | text | Isi pesan |
+| file | varchar nullable | Path file lampiran |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Tabel `groups`
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| id | bigint | Primary key |
+| name | varchar | Nama grup |
 
-## Code of Conduct
+### Tabel `group_user` (pivot)
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| group_id | bigint FK | groups.id |
+| user_id | bigint FK | users.id |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Tabel `group_messages`
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| id | bigint | Primary key |
+| group_id | bigint FK | groups.id |
+| sender_id | bigint FK | users.id |
+| message | text | Isi pesan |
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🚀 Cara Menjalankan Proyek
 
-## License
+### Prasyarat
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Pastikan sudah terinstall:
+- PHP >= 8.2
+- Composer
+- Node.js >= 18 & NPM
+- MySQL
+
+---
+
+### Langkah 1 — Clone / Extract Proyek
+
+```bash
+# Jika dari ZIP, extract dulu, lalu masuk ke folder
+cd ngobrolyuk
+```
+
+---
+
+### Langkah 2 — Install Dependensi PHP
+
+```bash
+composer install
+```
+
+---
+
+### Langkah 3 — Install Dependensi JavaScript
+
+```bash
+npm install
+```
+
+---
+
+### Langkah 4 — Konfigurasi Environment
+
+Salin file `.env.example` menjadi `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Generate application key:
+
+```bash
+php artisan key:generate
+```
+
+Buka file `.env` dan sesuaikan konfigurasi berikut:
+
+```env
+APP_NAME=NgobrolYuk
+APP_URL=http://127.0.0.1:8000
+
+# Database MySQL
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=app_cating        # nama database kamu
+DB_USERNAME=root
+DB_PASSWORD=                  # isi password MySQL kamu
+
+# Session — WAJIB pakai 'file' agar WebSocket auth berfungsi
+SESSION_DRIVER=file
+
+# Broadcasting & Queue
+BROADCAST_CONNECTION=reverb
+QUEUE_CONNECTION=database
+
+# Reverb WebSocket Server
+REVERB_APP_ID=498196
+REVERB_APP_KEY=your_reverb_key
+REVERB_APP_SECRET=your_reverb_secret
+REVERB_HOST="127.0.0.1"
+REVERB_PORT=8080
+REVERB_SCHEME=http
+
+VITE_REVERB_APP_KEY="${REVERB_APP_KEY}"
+VITE_REVERB_HOST="${REVERB_HOST}"
+VITE_REVERB_PORT="${REVERB_PORT}"
+VITE_REVERB_SCHEME="${REVERB_SCHEME}"
+```
+
+> ⚠️ **Penting:** `SESSION_DRIVER` harus `file` (bukan `database`), karena Laravel Reverb membaca session saat autentikasi WebSocket. Jika pakai `database`, auth channel akan selalu gagal dan status selalu tampil Offline.
+
+---
+
+### Langkah 5 — Buat Database
+
+Buat database MySQL dengan nama sesuai `DB_DATABASE` di `.env`:
+
+```sql
+CREATE DATABASE app_cating;
+```
+
+---
+
+### Langkah 6 — Jalankan Migrasi
+
+```bash
+php artisan migrate
+```
+
+Perintah ini akan membuat semua tabel: `users`, `messages`, `groups`, `group_user`, `group_messages`, `jobs`, `cache`.
+
+---
+
+### Langkah 7 — Buat Symlink Storage (untuk file upload)
+
+```bash
+php artisan storage:link
+```
+
+---
+
+### Langkah 8 — Build Aset Frontend
+
+```bash
+npm run build
+```
+
+Atau untuk mode development (auto-reload saat file berubah):
+
+```bash
+npm run dev
+```
+
+---
+
+### Langkah 9 — Jalankan Semua Service
+
+Buka **4 terminal terpisah** dan jalankan masing-masing:
+
+**Terminal 1 — Laravel Server:**
+```bash
+php artisan serve
+```
+
+**Terminal 2 — Reverb WebSocket Server:**
+```bash
+php artisan reverb:start
+```
+
+**Terminal 3 — Queue Worker (untuk broadcast event):**
+```bash
+php artisan queue:work
+```
+
+**Terminal 4 — Vite (jika pakai mode dev):**
+```bash
+npm run dev
+```
+
+> 💡 **Shortcut:** Kamu bisa menjalankan semuanya sekaligus dengan satu perintah:
+> ```bash
+> composer run dev
+> ```
+> Perintah ini menjalankan Laravel server, queue, log monitor, dan Vite secara bersamaan menggunakan `concurrently`.
+
+---
+
+### Langkah 10 — Buka Aplikasi
+
+Akses aplikasi di browser:
+
+```
+http://127.0.0.1:8000
+```
+
+Daftarkan minimal **2 akun** untuk mencoba fitur chat dan tracking online/offline.
+
+---
+
+## 🧪 Cara Tes Tracking Online / Offline
+
+1. Buka **2 browser berbeda** (misalnya Chrome dan Firefox, atau Chrome + mode Incognito)
+2. Login dengan akun berbeda di masing-masing browser
+3. Buka halaman Chat di keduanya
+4. Status **● Online** akan muncul secara otomatis di sidebar dan header chat
+5. Tutup salah satu tab → status berubah menjadi **● Offline** secara realtime
+
+---
+
+## 🔗 Daftar Route
+
+| Method | URL | Nama | Keterangan |
+|---|---|---|---|
+| GET | `/` | - | Redirect ke login |
+| GET | `/login` | login | Halaman login |
+| POST | `/login` | - | Proses login |
+| GET | `/register` | register | Halaman register |
+| POST | `/register` | - | Proses register |
+| POST | `/logout` | logout | Logout |
+| GET | `/dashboard` | dashboard | Dashboard |
+| GET | `/chat/{id?}` | chat.index | Halaman chat private |
+| POST | `/message` | message.store | Kirim pesan private |
+| GET | `/groups` | groups.index | Daftar grup |
+| POST | `/groups` | groups.store | Buat grup baru |
+| GET | `/groups/{id}` | groups.show | Halaman chat grup |
+| POST | `/groups/{id}/message` | groups.message | Kirim pesan grup |
+| GET | `/profile` | profile.edit | Edit profil |
+| PATCH | `/profile` | profile.update | Update profil |
+| DELETE | `/profile` | profile.destroy | Hapus akun |
+
+---
+
+## ❗ Troubleshooting
+
+**Status selalu Offline:**
+- Pastikan `SESSION_DRIVER=file` di `.env`
+- Pastikan `php artisan reverb:start` sedang berjalan
+- Pastikan `php artisan queue:work` sedang berjalan
+- Jalankan `php artisan config:clear && php artisan cache:clear` lalu build ulang dengan `npm run build`
+- Cek Console browser (F12) untuk melihat error WebSocket
+
+**Pesan tidak terkirim realtime:**
+- Pastikan queue worker berjalan: `php artisan queue:work`
+- Cek `QUEUE_CONNECTION=database` di `.env`
+
+**Error 500 saat kirim pesan:**
+- Pastikan sudah menjalankan `php artisan storage:link`
+- Pastikan folder `storage/app/public` writable
+
+**WebSocket gagal connect:**
+- Pastikan port 8080 tidak dipakai aplikasi lain
+- Cek `REVERB_HOST` dan `REVERB_PORT` sudah sesuai di `.env`
+
+---
+
+## 👨‍💻 Dibuat Dengan
+
+- [Laravel](https://laravel.com)
+- [Laravel Reverb](https://reverb.laravel.com)
+- [Laravel Breeze](https://github.com/laravel/breeze)
+- [Alpine.js](https://alpinejs.dev)
+- [Tailwind CSS](https://tailwindcss.com)
+- [Laravel Echo](https://github.com/laravel/echo)
