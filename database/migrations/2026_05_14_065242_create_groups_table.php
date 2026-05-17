@@ -6,27 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('groups', function (Blueprint $table) {
-
-    $table->id();
-
-    $table->string('name');
-
-    $table->timestamps();
-
-});
+        Schema::table('groups', function (Blueprint $table) {
+            $table->foreignId('created_by')
+                  ->after('name')
+                  ->constrained('users')
+                  ->onDelete('cascade');
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('groups');
+        Schema::table('groups', function (Blueprint $table) {
+            $table->dropForeign(['created_by']);
+            $table->dropColumn('created_by');
+        });
     }
 };
