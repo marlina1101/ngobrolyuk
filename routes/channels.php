@@ -4,11 +4,11 @@ use Illuminate\Support\Facades\Broadcast;
 
 /*
 |--------------------------------------------------------------------------
-| PRESENCE CHANNEL — Chat Online/Offline
+| PRESENCE CHANNEL — ONLINE/OFFLINE TRACKING
 |--------------------------------------------------------------------------
 |
-| Channel ini dipakai untuk tracking user online
-| menggunakan Echo.join('chat')
+| Dipakai oleh:
+| window.Echo.join('chat')
 |
 */
 
@@ -24,10 +24,30 @@ Broadcast::channel('chat', function ($user) {
 
 /*
 |--------------------------------------------------------------------------
-| PRIVATE CHANNEL — User Notification
+| PRIVATE CHAT CHANNEL
 |--------------------------------------------------------------------------
 |
-| Channel private untuk notifikasi per-user
+| Dipakai oleh:
+| Echo.private(`chat.${userId}`)
+|
+| Contoh:
+| User 5 hanya bisa masuk ke chat.5
+| User 9 hanya bisa masuk ke chat.9
+|
+*/
+
+Broadcast::channel('chat.{id}', function ($user, $id) {
+
+    return (int) $user->id === (int) $id;
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| DEFAULT USER PRIVATE CHANNEL
+|--------------------------------------------------------------------------
+|
+| Channel bawaan Laravel
 |
 */
 

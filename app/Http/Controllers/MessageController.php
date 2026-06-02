@@ -12,18 +12,35 @@ class MessageController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'receiver_id' => 'required',
-            'message'     => 'nullable',
+            'receiver_id' => 'required|exists:users,id',
+            'message'     => 'nullable|string',
             'file'        => 'nullable|file|max:2048',
         ]);
 
-        $filePath = null;
-
-        if ($request->hasFile('file')) {
-            $filePath = $request->file('file')
-                ->store('chat_files', 'public');
+        // minimal harus ada text atau file
+        if (
+            !$request->filled('message')
+            && !$request->hasFile('file')
+        ) {
+            return response()->json([
+                'error' => 'Pesan kosong'
+            ], 422);
         }
 
+        $filePath = null;
+
+        // upload file
+        if ($request->hasFile('file')) {
+
+            $filePath = $request
+                ->file('file')
+                ->store(
+                    'chat_files',
+                    'public'
+                );
+        }
+
+        // simpan message
         $message = Message::create([
             'sender_id'   => Auth::id(),
             'receiver_id' => $request->receiver_id,
@@ -31,10 +48,20 @@ class MessageController extends Controller
             'file'        => $filePath,
         ]);
 
-        broadcast(new MessageSent($message))->toOthers();
+        // load sender relation
+        $message->load('sender');
 
-        // Jika request dari AJAX (fetch), return JSON
-        if ($request->ajax() || $request->wantsJson()) {
+        // realtime broadcast
+        broadcast(
+            new MessageSent($message)
+        )->toOthers();
+
+        // response AJAX
+        if (
+            $request->ajax()
+            || $request->wantsJson()
+        ) {
+
             return response()->json([
                 'message' => $message,
             ]);
